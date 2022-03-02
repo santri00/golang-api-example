@@ -3,8 +3,8 @@ package dataaccess
 import (
 	"encoding/json"
 
-	"github.com/stripathy/demo-vehicle-api/dataaccess/data"
 	"github.com/stripathy/demo-vehicle-api/dataaccess/entity"
+	"github.com/stripathy/demo-vehicle-api/dataaccess/vehicledata"
 )
 
 //IVehicleDataAccess defines the interface for the vehicle dataaccess
@@ -15,21 +15,36 @@ type IVehicleDataAccess interface {
 
 //VehicleDataAccess defines the vehicle dataaccess struct
 type VehicleDataAccess struct {
+	vehicleData vehicledata.IVehicleData
 }
 
 //New returns a new instance of Vehicle Dataaccess
 func New() *VehicleDataAccess {
-	return &VehicleDataAccess{}
+	return &VehicleDataAccess{vehicleData: vehicledata.New()}
 }
 
 //GetAll gets all vehicles from the data store
 func (dataAccess *VehicleDataAccess) GetAll() (*[]entity.Vehicle, error) {
-	dataJSON := data.VehiclesDataJSON
-	vehicles := []entity.Vehicle{}
 
-	e := json.Unmarshal([]byte(dataJSON), &vehicles)
+	data, e := dataAccess.vehicleData.ReadAll()
 	if e != nil {
 		return nil, e
+	}
+
+	if len(data) == 0 {
+		return nil, nil
+	}
+
+	vehicles := []entity.Vehicle{}
+	for _, record := range data {
+		vehicle := entity.Vehicle{}
+
+		e = json.Unmarshal([]byte(record), &vehicle)
+		if e != nil {
+			return nil, e
+		}
+
+		vehicles = append(vehicles, vehicle)
 	}
 
 	return &vehicles, nil
@@ -37,5 +52,17 @@ func (dataAccess *VehicleDataAccess) GetAll() (*[]entity.Vehicle, error) {
 
 //Get gets the vehicle detail for the stockID from the data store
 func (dataAccess *VehicleDataAccess) Get(stockID int64) (*entity.Vehicle, error) {
-	return nil, nil
+
+	data, e := dataAccess.vehicleData.Read(stockID)
+	if e != nil {
+		return nil, e
+	}
+
+	vehicle := entity.Vehicle{}
+	e = json.Unmarshal([]byte(data), &vehicle)
+	if e != nil {
+		return nil, e
+	}
+
+	return &vehicle, nil
 }
