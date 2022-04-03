@@ -11,6 +11,7 @@ import (
 //IVehicleResource defines the vehicle interface
 type IVehicleResource interface {
 	GetVehicles() (*models.Vehicles, error)
+	GetVehicle(stockId int64) (*models.Vehicle, error)
 }
 
 //VehicleResource defines a vehicle resource
@@ -60,4 +61,35 @@ func (vehicle *VehicleResource) GetVehicles() (*models.Vehicles, error) {
 	}
 
 	return &vehicles, nil
+}
+
+//GetVehicle
+func (vehicle *VehicleResource) GetVehicle(stockId int64) (*models.Vehicle, error) {
+
+	record, e := vehicle.vehicleDataAccess.Get(stockId)
+	if e != nil {
+		return nil, e
+	}
+
+	if record == nil {
+		return nil, nil
+	}
+
+	//use common/shared method
+	invDate, e := time.Parse("01/02/2006", record.InventoryDate)
+	if e != nil {
+		return nil, fmt.Errorf("Failed to parse the vehicle inventory date; error: %s", e.Error())
+	}
+
+	vehicleData := &models.Vehicle{
+		StockID:         record.StockID,
+		Name:            record.Name,
+		Vin:             record.Vin,
+		Model:           record.Model,
+		Year:            record.Year,
+		Price:           record.Price,
+		DaysInInventory: int(time.Now().Sub(invDate).Hours() / 24),
+	}
+
+	return vehicleData, nil
 }
