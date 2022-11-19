@@ -1,2 +1,2 @@
-# dealer-vehicle-inventory-api
+# dealer-inventory-api
 A simple golang api
