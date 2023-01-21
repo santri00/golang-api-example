@@ -1,43 +1,42 @@
-package main
+package api
 
 import (
+	"github.com/santri00/golang-api-example/pkg/router"
 	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/stripathy/demo-vehicle-api/models"
-	"github.com/stripathy/demo-vehicle-api/routes"
 )
 
-//ConfigureVehicleRoutes adds routes related to vehicle features
-func (apiServer *APIServer) ConfigureVehicleRoutes() {
-	routes.Routes = append(routes.Routes, routes.Route{
-		Name:       "GetAllVehicles",
+// adds routes related to vehicle resource handler
+func (apiServer *Server) configureVehicleHandlerRoutes() {
+	router.Routes = append(router.Routes, router.Route{
+		Name:       "ListVehicles",
 		HTTPVerb:   "GET",
-		Pattern:    "/v1/vehicles",
-		HandleFunc: apiServer.GetAllVehicles,
+		Pattern:    "/inventory/v1/vehicles",
+		HandleFunc: apiServer.listVehicles,
 	},
 
-		routes.Route{
-			Name:       "GetVehicle",
+		router.Route{
+			Name:       "GetVehicleByStockId",
 			HTTPVerb:   "GET",
-			Pattern:    "/v1/vehicles/{stock_id}",
-			HandleFunc: apiServer.GetVehicle,
+			Pattern:    "/inventory/v1/vehicles/{stock_id}",
+			HandleFunc: apiServer.getVehicleByStockId,
 		},
 	)
 }
 
-//GetAllVehicles returns all vehicles
-func (apiServer *APIServer) GetAllVehicles(w http.ResponseWriter, r *http.Request) {
+// Returns all vehicles
+func (apiServer *Server) listVehicles(w http.ResponseWriter, r *http.Request) {
 
-	vehicles, err := apiServer.vehicleResource.GetVehicles()
+	vehicles, err := apiServer.vehicleService.ListVehicles()
 	if err != nil {
 		log.Printf("ERROR >> %s", err.Error())
-		respondJSON(models.ErrorResponse{
+		respondJSON(errorResponse{
 			StatusCode: http.StatusInternalServerError,
 			StatusText: http.StatusText(http.StatusInternalServerError),
-			Detail:     "Somethimg went wrong",
+			Detail:     "Something went wrong",
 		}, w)
 
 		return
@@ -46,7 +45,7 @@ func (apiServer *APIServer) GetAllVehicles(w http.ResponseWriter, r *http.Reques
 	if vehicles == nil ||
 		len(*vehicles) == 0 {
 		log.Printf("WARNING >> %s", "No vehicles were found")
-		respondJSON(models.ErrorResponse{
+		respondJSON(errorResponse{
 			StatusCode: http.StatusNotFound,
 			StatusText: http.StatusText(http.StatusNotFound),
 			Detail:     "No vehicles were found",
@@ -59,15 +58,15 @@ func (apiServer *APIServer) GetAllVehicles(w http.ResponseWriter, r *http.Reques
 	respondJSON(vehicles, w)
 }
 
-//GetVehicle returns the vehicle data for the given stock Id
-func (apiServer *APIServer) GetVehicle(w http.ResponseWriter, r *http.Request) {
+// Returns the vehicle data for the given stock ID
+func (apiServer *Server) getVehicleByStockId(w http.ResponseWriter, r *http.Request) {
 
 	//Read the path parameter
 	stockIdParam := mux.Vars(r)["stock_id"]
-	stockId, err := strconv.ParseInt(stockIdParam, 10, 64)
+	stockId, err := strconv.Atoi(stockIdParam)
 	if err != nil {
 		log.Printf("ERROR >> %s", err.Error())
-		respondJSON(models.ErrorResponse{
+		respondJSON(errorResponse{
 			StatusCode: http.StatusBadRequest,
 			StatusText: http.StatusText(http.StatusBadRequest),
 			Detail:     "Stock Id path parameter must be numeric",
@@ -76,13 +75,13 @@ func (apiServer *APIServer) GetVehicle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	vehicle, err := apiServer.vehicleResource.GetVehicle(stockId)
+	vehicle, err := apiServer.vehicleService.GetVehicleByStockId(stockId)
 	if err != nil {
 		log.Printf("ERROR >> %s", err.Error())
-		respondJSON(models.ErrorResponse{
+		respondJSON(errorResponse{
 			StatusCode: http.StatusInternalServerError,
 			StatusText: http.StatusText(http.StatusInternalServerError),
-			Detail:     "Somethimg went wrong",
+			Detail:     "Something went wrong",
 		}, w)
 
 		return
@@ -90,7 +89,7 @@ func (apiServer *APIServer) GetVehicle(w http.ResponseWriter, r *http.Request) {
 
 	if vehicle == nil {
 		log.Printf("WARNING >> %s", "No vehicle data was found")
-		respondJSON(models.ErrorResponse{
+		respondJSON(errorResponse{
 			StatusCode: http.StatusNotFound,
 			StatusText: http.StatusText(http.StatusNotFound),
 			Detail:     "No vehicle data was found",

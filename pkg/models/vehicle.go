@@ -1,15 +1,17 @@
 package models
 
-//Vehicle models a vehicle
+// Vehicle represents a vehicle record
 type Vehicle struct {
-	StockID         int64  `json:"stock_id"`
+	StockID         int    `json:"stock_id"`
 	Name            string `json:"name"`
 	Vin             string `json:"vin"`
 	Model           string `json:"model"`
 	Year            string `json:"year"`
 	Price           string `json:"price"`
+	Brand           string `json:"brand"`
+	Type            string `json:"type"`
 	DaysInInventory int    `json:"days_in_inventory"`
 }
 
-//Vehicles a list of vehicle
+// Vehicles represents the list of vehicles
 type Vehicles []Vehicle

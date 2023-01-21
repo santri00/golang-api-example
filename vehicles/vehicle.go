@@ -1,5 +1,6 @@
 package vehicles
 
+/*
 import (
 	"fmt"
 	"time"
@@ -93,3 +94,4 @@ func (vehicle *VehicleResource) GetVehicle(stockId int64) (*models.Vehicle, erro
 
 	return vehicleData, nil
 }
+*/

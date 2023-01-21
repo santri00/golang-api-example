@@ -3,27 +3,27 @@ package dataaccess
 import (
 	"encoding/json"
 
-	"github.com/stripathy/demo-vehicle-api/dataaccess/entity"
-	"github.com/stripathy/demo-vehicle-api/dataaccess/vehicledata"
+	"github.com/santri00/golang-api-example/dataaccess/entity"
+	"github.com/santri00/golang-api-example/dataaccess/vehicledata"
 )
 
-//IVehicleDataAccess defines the interface for the vehicle dataaccess
+// IVehicleDataAccess defines the interface for the vehicle dataaccess
 type IVehicleDataAccess interface {
 	GetAll() (*[]entity.Vehicle, error)
 	Get(stockID int64) (*entity.Vehicle, error)
 }
 
-//VehicleDataAccess defines the vehicle dataaccess struct
+// VehicleDataAccess defines the vehicle dataaccess struct
 type VehicleDataAccess struct {
 	vehicleData vehicledata.IVehicleData
 }
 
-//New returns a new instance of Vehicle Dataaccess
+// New returns a new instance of Vehicle Dataaccess
 func New() *VehicleDataAccess {
 	return &VehicleDataAccess{vehicleData: vehicledata.New()}
 }
 
-//GetAll gets all vehicles from the data store
+// GetAll gets all vehicles from the data store
 func (dataAccess *VehicleDataAccess) GetAll() (*[]entity.Vehicle, error) {
 
 	data, e := dataAccess.vehicleData.ReadAll()
@@ -50,7 +50,7 @@ func (dataAccess *VehicleDataAccess) GetAll() (*[]entity.Vehicle, error) {
 	return &vehicles, nil
 }
 
-//Get gets the vehicle detail for the stockID from the data store
+// Get gets the vehicle detail for the stockID from the data store
 func (dataAccess *VehicleDataAccess) Get(stockID int64) (*entity.Vehicle, error) {
 
 	data, e := dataAccess.vehicleData.Read(stockID)
