@@ -23,6 +23,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o api ./cmd/api
 #RUN Stage
 FROM gcr.io/distroless/static-debian11
 WORKDIR /app
+COPY --from=builder /app/configs/config.yaml .
 COPY --from=builder /app/api .
 EXPOSE 3001
 
