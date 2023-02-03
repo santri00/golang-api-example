@@ -1,11 +1,14 @@
 package vehicle
 
-import "github.com/santri00/golang-api-example/pkg/models"
+import (
+	"context"
+	"github.com/santri00/golang-api-example/pkg/models"
+)
 
 // Service defines the interface methods for vehicle service
 type Service interface {
-	ListVehicles() (*models.Vehicles, error)
-	GetVehicleByStockId(stockId int) (*models.Vehicle, error)
+	ListVehicles(ctx context.Context) (*models.Vehicles, error)
+	GetVehicleByStockId(ctx context.Context, stockId int) (*models.VehicleDetailedRecord, error)
 }
 
 type service struct {
@@ -17,11 +20,11 @@ func NewService() Service {
 }
 
 // ListVehicles returns the list of vehicles
-func (svc *service) ListVehicles() (*models.Vehicles, error) {
+func (svc *service) ListVehicles(ctx context.Context) (*models.Vehicles, error) {
 	return nil, nil
 }
 
 // GetVehicleByStockId returns the vehicle data for the given stock ID
-func (svc *service) GetVehicleByStockId(stockId int) (*models.Vehicle, error) {
+func (svc *service) GetVehicleByStockId(ctx context.Context, stockId int) (*models.VehicleDetailedRecord, error) {
 	return nil, nil
 }

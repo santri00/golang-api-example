@@ -18,8 +18,6 @@ func (server *Server) configurePingHandlerRoutes() {
 
 // Handles the ping response
 func (server *Server) ping(w http.ResponseWriter, r *http.Request) {
-	log.Printf("Responded: %s\t%s\t%s", r.Method, r.URL.String(), r.RemoteAddr)
-
 	//Redis client
 	client := server.redisClient
 	//ping

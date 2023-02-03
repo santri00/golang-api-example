@@ -30,7 +30,7 @@ func (server *Server) configureVehicleHandlerRoutes() {
 // Returns all vehicles
 func (server *Server) listVehicles(w http.ResponseWriter, r *http.Request) {
 
-	vehicles, err := server.vehicleService.ListVehicles()
+	vehicles, err := server.vehicleService.ListVehicles(server.ctx)
 	if err != nil {
 		log.Printf("ERROR >> %s", err.Error())
 		respondJSON(http.StatusInternalServerError, errorResponse{
@@ -74,7 +74,7 @@ func (server *Server) getVehicleByStockId(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	vehicle, err := server.vehicleService.GetVehicleByStockId(stockId)
+	vehicle, err := server.vehicleService.GetVehicleByStockId(server.ctx, stockId)
 	if err != nil {
 		log.Printf("ERROR >> %s", err.Error())
 		respondJSON(http.StatusInternalServerError, errorResponse{

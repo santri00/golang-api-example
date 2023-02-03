@@ -1,0 +1,12 @@
+version: "2.10"
+services:
+  api:
+    build: .
+    ports:
+      - "3001:3001"
+    #mount
+  redis:
+    image: "redis:6.0-alpine"
+    ports:
+      - "6380:6379"
+
