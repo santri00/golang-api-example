@@ -22,6 +22,7 @@ func initialize() *api.Server {
 	rdb := initializeRedisClient(fmt.Sprintf("%s:%s",
 		c.Store.Get(configkeys.RedisAddr),
 		c.Store.Get(configkeys.RedisPort)))
+	defer rdb.Close()
 
 	return api.NewServer(context.Background(),
 		c,

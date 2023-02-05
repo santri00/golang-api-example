@@ -8,7 +8,7 @@ import (
 // Service defines the interface methods for vehicle service
 type Service interface {
 	ListVehicles(ctx context.Context) (*models.Vehicles, error)
-	GetVehicleByStockId(ctx context.Context, stockId int) (*models.VehicleDetailedRecord, error)
+	GetVehicleByStockId(ctx context.Context, stockId string) (*models.VehicleDetailedRecord, error)
 }
 
 type service struct {
@@ -25,6 +25,6 @@ func (svc *service) ListVehicles(ctx context.Context) (*models.Vehicles, error) 
 }
 
 // GetVehicleByStockId returns the vehicle data for the given stock ID
-func (svc *service) GetVehicleByStockId(ctx context.Context, stockId int) (*models.VehicleDetailedRecord, error) {
+func (svc *service) GetVehicleByStockId(ctx context.Context, stockId string) (*models.VehicleDetailedRecord, error) {
 	return nil, nil
 }

@@ -1,12 +1,10 @@
 package api
 
 import (
+	"github.com/gorilla/mux"
 	"github.com/santri00/golang-api-example/pkg/router"
 	"log"
 	"net/http"
-	"strconv"
-
-	"github.com/gorilla/mux"
 )
 
 // adds routes related to vehicle resource handler
@@ -61,18 +59,7 @@ func (server *Server) listVehicles(w http.ResponseWriter, r *http.Request) {
 func (server *Server) getVehicleByStockId(w http.ResponseWriter, r *http.Request) {
 
 	//Read the path parameter
-	stockIdParam := mux.Vars(r)["stock_id"]
-	stockId, err := strconv.Atoi(stockIdParam)
-	if err != nil {
-		log.Printf("ERROR >> %s", err.Error())
-		respondJSON(http.StatusBadRequest, errorResponse{
-			StatusCode: http.StatusBadRequest,
-			StatusText: http.StatusText(http.StatusBadRequest),
-			Detail:     "Stock Id path parameter must be numeric",
-		}, w, r)
-
-		return
-	}
+	stockId := mux.Vars(r)["stock_id"]
 
 	vehicle, err := server.vehicleService.GetVehicleByStockId(server.ctx, stockId)
 	if err != nil {

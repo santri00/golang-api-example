@@ -2,13 +2,13 @@ package entities
 
 // Vehicle defines a vehicle entity
 type Vehicle struct {
-	BasicRecord    VehicleBasicRecord
-	DetailedRecord VehicleDetailedRecord
+	BasicRecord    *VehicleBasicRecord    `json:"basic-record"`
+	DetailedRecord *VehicleDetailedRecord `json:"detailed-record"`
 }
 
 // VehicleBasicRecord defines the basic vehicle record
 type VehicleBasicRecord struct {
-	StockID        int    `json:"stock_id"`
+	StockID        string `json:"stock_id"`
 	Title          string `json:"title"`
 	Price          string `json:"price"`
 	Miles          string `json:"miles"`
