@@ -8,6 +8,7 @@ import (
 	"github.com/santri00/golang-api-example/pkg/apiconfig"
 	"github.com/santri00/golang-api-example/pkg/apiconfig/configkeys"
 	"github.com/santri00/golang-api-example/pkg/services/vehicle"
+	vehicleStorage "github.com/santri00/golang-api-example/pkg/storage/vehicle"
 	"log"
 )
 
@@ -27,7 +28,7 @@ func initialize() *api.Server {
 	return api.NewServer(context.Background(),
 		c,
 		rdb,
-		vehicle.NewService())
+		vehicle.NewService(vehicleStorage.New(rdb)))
 }
 
 // initializes the redis client and connection

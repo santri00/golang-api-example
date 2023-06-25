@@ -5,17 +5,17 @@ import (
 	"sync"
 )
 
-//IData Represents the interface
+// IVehicleData Represents the interface
 type IVehicleData interface {
 	ReadAll() ([]string, error)
 	Read(int64) (string, error)
 }
 
-//VehicleData Represents the struct
+// VehicleData Represents the struct
 type VehicleData struct {
 }
 
-//New returns a new instance of Vehicle data
+// New returns a new instance of Vehicle data
 func New() *VehicleData {
 	return &VehicleData{}
 }
@@ -30,7 +30,7 @@ var vehicleData = map[int64]string{
 
 var lock = sync.RWMutex{}
 
-//ReadAll Selects all vehicle records
+// ReadAll Selects all vehicle records
 func (vd *VehicleData) ReadAll() ([]string, error) {
 	lock.RLock()
 	defer lock.RUnlock()
@@ -43,7 +43,7 @@ func (vd *VehicleData) ReadAll() ([]string, error) {
 	return records, nil
 }
 
-//ReadAll Selects all vehicle records
+// ReadAll Selects all vehicle records
 func (vd *VehicleData) Read(stockId int64) (string, error) {
 	lock.RLock()
 	defer lock.RUnlock()

@@ -1,5 +1,7 @@
 package vehicle
 
+//TODO add unit tests
+
 import (
 	"context"
 	"encoding/json"
@@ -13,9 +15,15 @@ import (
 
 // Repository defines the vehicle repository interface
 type Repository interface {
+	//Create creates the vehicle record and adds to the storage.
+	// The method returns the newly created stock ID for the given vehicle record
 	Create(ctx context.Context, vehicleRecord *entities.Vehicle) (string, error)
+	// GetAll fetches list of vehicle records
+	// offset determines the starting record from which the list will be returned
+	// limit determines the number of records that will be returned
 	GetAll(ctx context.Context, offset int, limit int) (*[]entities.VehicleBasicRecord, error)
-	Get(ctx context.Context, stockId string) (*[]entities.Vehicle, error)
+	// Get fetches the vehicle detailed record for the given stock ID
+	Get(ctx context.Context, stockId string) (*entities.Vehicle, error)
 }
 
 type repository struct {
@@ -44,7 +52,8 @@ func (repo *repository) Create(ctx context.Context, vehicleRecord *entities.Vehi
 		return "", errors.New("vehicle detailed record is missing. vehicle record can't be created")
 	}
 
-	//generate new stock id
+	//generate new stock id (using uuid)
+	//using uuid to uniquely identify each vehicle record is ok for our example use case
 	stockId, e := utilities.NewUUIDString()
 	if e != nil {
 		return "", fmt.Errorf("failed to generate stock Id. error: %s", e.Error())
@@ -61,7 +70,6 @@ func (repo *repository) Create(ctx context.Context, vehicleRecord *entities.Vehi
 	}
 
 	basicRecord := string(basicRecordBytes)
-
 	//detailed record
 	detailedRecordBytes, e := json.Marshal(vehicleRecord.DetailedRecord)
 	if e != nil {
@@ -74,11 +82,11 @@ func (repo *repository) Create(ctx context.Context, vehicleRecord *entities.Vehi
 	//create a transaction pipeline
 	pipe := repo.redisClient.TxPipeline()
 	defer pipe.Close()
-
+	//add vehicle record
 	pipe.HSet(ctx, storageKey, cachekeys.BasicRecordCacheChildKey, basicRecord)
 	pipe.HSet(ctx, storageKey, cachekeys.DetailedRecordCacheChildKey, string(detailedRecordBytes))
 	//add to the vehicle list
-	//use this list for retrieval all vehicles with the basic record
+	//this list is used to retrieve all vehicles with the basic record
 	pipe.RPush(ctx, cachekeys.VehicleRecordListCacheKey, basicRecord)
 	//execute all the commands
 	_, e = pipe.Exec(ctx)
@@ -91,10 +99,72 @@ func (repo *repository) Create(ctx context.Context, vehicleRecord *entities.Vehi
 
 // GetAll fetches list of vehicle (basic/header) records
 func (repo *repository) GetAll(ctx context.Context, offset int, limit int) (*[]entities.VehicleBasicRecord, error) {
-	return nil, nil
+	if limit == 0 {
+		return nil, errors.New("invalid argument;limit value (should be greater than 0) must be provided")
+	}
+
+	//return list from cache
+	data, e := repo.redisClient.LRange(ctx, cachekeys.VehicleRecordListCacheKey, int64(offset), int64(limit)).Result()
+	if e != nil {
+		return nil, fmt.Errorf("failed to retrieve vehicle records. error: %s", e.Error())
+	}
+
+	//check if empty was returned
+	if len(data) == 0 {
+		return nil, nil
+	}
+
+	//read data
+	var result []entities.VehicleBasicRecord
+	for _, record := range data {
+		vehicle := entities.VehicleBasicRecord{}
+		e = json.Unmarshal([]byte(record), &vehicle)
+		if e != nil {
+			return nil, fmt.Errorf("failed to retrieve vehicle records. unmarshal error: %s", e.Error())
+		}
+
+		//add
+		result = append(result, vehicle)
+	}
+
+	return &result, nil
 }
 
 // Get fetches the vehicle detailed record for the given stock ID
-func (repo *repository) Get(ctx context.Context, stockId string) (*[]entities.Vehicle, error) {
-	return nil, nil
+func (repo *repository) Get(ctx context.Context, stockId string) (*entities.Vehicle, error) {
+	if len(stockId) == 0 {
+		return nil, errors.New("invalid argument;stock id must be provided")
+	}
+
+	//formats the vehicle hash key
+	storageKey := fmt.Sprintf(cachekeys.VehicleRecordCacheKey, stockId)
+	//fetch data from the cache
+	data, e := repo.redisClient.HGetAll(ctx, storageKey).Result()
+	if e != nil {
+		return nil, fmt.Errorf("failed to retrieve the vehicle data for stock id %s; error: %s", stockId, e.Error())
+	}
+
+	//read data
+	if len(data) == 0 {
+		return nil, nil
+	}
+
+	basicRecord := entities.VehicleBasicRecord{}
+	detailedRecord := entities.VehicleDetailedRecord{}
+	for key, record := range data {
+		switch key {
+		case cachekeys.BasicRecordCacheChildKey:
+			e = json.Unmarshal([]byte(record), &basicRecord)
+			if e != nil {
+				return nil, fmt.Errorf("failed to retrieve vehicle basic record. unmarshal error: %s", e.Error())
+			}
+		case cachekeys.DetailedRecordCacheChildKey:
+			e = json.Unmarshal([]byte(record), &detailedRecord)
+			if e != nil {
+				return nil, fmt.Errorf("failed to retrieve vehicle detailed record. unmarshal error: %s", e.Error())
+			}
+		}
+	}
+
+	return &entities.Vehicle{BasicRecord: &basicRecord, DetailedRecord: &detailedRecord}, nil
 }
