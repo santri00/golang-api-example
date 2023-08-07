@@ -2,15 +2,18 @@ package vehicle
 
 import (
 	"context"
+	"errors"
 	"github.com/santri00/golang-api-example/pkg/models"
+	"github.com/santri00/golang-api-example/pkg/services/vehicle/mapper"
 	"github.com/santri00/golang-api-example/pkg/storage/vehicle"
 )
 
 // Service defines the interface methods for vehicle service
 type Service interface {
-	AddVehicle(ctx context.Context, vehicle *models.Vehicle) (string, error)
+	//AddVehicle adds the vehicle data
+	AddVehicle(ctx context.Context, vehicle *models.VehicleDetailedRecord) (string, error)
 	// ListVehicles returns the list of vehicles
-	ListVehicles(ctx context.Context) (*models.Vehicles, error)
+	ListVehicles(ctx context.Context, offset, limit int) (*models.ListVehicleResponse, error)
 	// GetVehicleByStockId returns the vehicle data for the given stock ID
 	GetVehicleByStockId(ctx context.Context, stockId string) (*models.VehicleDetailedRecord, error)
 }
@@ -24,16 +27,40 @@ func NewService(vehicleRepo vehicle.Repository) Service {
 	return &service{vehicleRepo: vehicleRepo}
 }
 
-func (svc *service) AddVehicle(ctx context.Context, vehicle *models.Vehicle) (string, error) {
-	return "", nil
+func (svc *service) AddVehicle(ctx context.Context, vehicle *models.VehicleDetailedRecord) (string, error) {
+	if vehicle == nil {
+		return "", errors.New("vehicle data is empty. The record can't be created")
+	}
+
+	//maps to entity
+	entity := mapper.MapToVehicleEntity(vehicle)
+	stockId, e := svc.vehicleRepo.Create(ctx, entity)
+	return stockId, e
 }
 
 // ListVehicles returns the list of vehicles
-func (svc *service) ListVehicles(ctx context.Context) (*models.Vehicles, error) {
-	return nil, nil
+func (svc *service) ListVehicles(ctx context.Context, offset, limit int) (*models.ListVehicleResponse, error) {
+	records, totalRecordsCount, e := svc.vehicleRepo.GetAll(ctx, offset, limit)
+	if e != nil {
+		return nil, e
+	}
+	vehicles := mapper.MapFromVehicleBasicRecordEntity(records)
+	res := &models.ListVehicleResponse{
+		Metadata: models.Metadata{
+			Offset: offset, Limit: limit, TotalCount: totalRecordsCount,
+		},
+		Records: vehicles,
+	}
+	return res, nil
 }
 
 // GetVehicleByStockId returns the vehicle data for the given stock ID
 func (svc *service) GetVehicleByStockId(ctx context.Context, stockId string) (*models.VehicleDetailedRecord, error) {
-	return nil, nil
+	record, e := svc.vehicleRepo.Get(ctx, stockId)
+	if e != nil {
+		return nil, e
+	}
+
+	vehicle := mapper.MapFromVehicleEntity(record)
+	return vehicle, nil
 }

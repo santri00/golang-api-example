@@ -24,7 +24,8 @@ func respondJSON(httpStatus int, o interface{}, w http.ResponseWriter, r *http.R
 
 // errorResponse represents an error response returned by non-success http status response
 type errorResponse struct {
-	StatusCode int    `json:"status_code"`
-	StatusText string `json:"status_text"`
-	Detail     string `json:"detail"`
+	StatusCode       int      `json:"status_code"`
+	StatusText       string   `json:"status_text"`
+	Detail           string   `json:"detail"`
+	ValidationErrors []string `json:"validation_errors"`
 }

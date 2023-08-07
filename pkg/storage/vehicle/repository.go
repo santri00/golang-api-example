@@ -18,10 +18,10 @@ type Repository interface {
 	//Create creates the vehicle record and adds to the storage.
 	// The method returns the newly created stock ID for the given vehicle record
 	Create(ctx context.Context, vehicleRecord *entities.Vehicle) (string, error)
-	// GetAll fetches list of vehicle records
+	// GetAll fetches list of vehicle records as requested with the total record count
 	// offset determines the starting record from which the list will be returned
 	// limit determines the number of records that will be returned
-	GetAll(ctx context.Context, offset int, limit int) (*[]entities.VehicleBasicRecord, error)
+	GetAll(ctx context.Context, offset int, limit int) (*[]entities.VehicleBasicRecord, int, error)
 	// Get fetches the vehicle detailed record for the given stock ID
 	Get(ctx context.Context, stockId string) (*entities.Vehicle, error)
 }
@@ -98,20 +98,20 @@ func (repo *repository) Create(ctx context.Context, vehicleRecord *entities.Vehi
 }
 
 // GetAll fetches list of vehicle (basic/header) records
-func (repo *repository) GetAll(ctx context.Context, offset int, limit int) (*[]entities.VehicleBasicRecord, error) {
+func (repo *repository) GetAll(ctx context.Context, offset int, limit int) (*[]entities.VehicleBasicRecord, int, error) {
 	if limit == 0 {
-		return nil, errors.New("invalid argument;limit value (should be greater than 0) must be provided")
+		return nil, 0, errors.New("invalid argument;limit value (should be greater than 0) must be provided")
 	}
 
 	//return list from cache
 	data, e := repo.redisClient.LRange(ctx, cachekeys.VehicleRecordListCacheKey, int64(offset), int64(limit)).Result()
 	if e != nil {
-		return nil, fmt.Errorf("failed to retrieve vehicle records. error: %s", e.Error())
+		return nil, 0, fmt.Errorf("failed to retrieve vehicle records. error: %s", e.Error())
 	}
 
 	//check if empty was returned
 	if len(data) == 0 {
-		return nil, nil
+		return nil, 0, nil
 	}
 
 	//read data
@@ -120,14 +120,14 @@ func (repo *repository) GetAll(ctx context.Context, offset int, limit int) (*[]e
 		vehicle := entities.VehicleBasicRecord{}
 		e = json.Unmarshal([]byte(record), &vehicle)
 		if e != nil {
-			return nil, fmt.Errorf("failed to retrieve vehicle records. unmarshal error: %s", e.Error())
+			return nil, 0, fmt.Errorf("failed to retrieve vehicle records. unmarshal error: %s", e.Error())
 		}
 
 		//add
 		result = append(result, vehicle)
 	}
 
-	return &result, nil
+	return &result, 0, nil
 }
 
 // Get fetches the vehicle detailed record for the given stock ID

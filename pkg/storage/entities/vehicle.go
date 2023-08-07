@@ -1,5 +1,7 @@
 package entities
 
+import "time"
+
 // Vehicle defines a vehicle entity
 type Vehicle struct {
 	BasicRecord    *VehicleBasicRecord    `json:"basic-record"`
@@ -8,18 +10,19 @@ type Vehicle struct {
 
 // VehicleBasicRecord defines the basic vehicle record
 type VehicleBasicRecord struct {
-	StockID        string `json:"stock_id"`
-	Title          string `json:"title"`
-	Price          string `json:"price"`
-	Miles          string `json:"miles"`
-	CoverImageLink string `json:"cover_image_link"`
+	StockID            string    `json:"stock_id"`
+	Title              string    `json:"title"`
+	Price              string    `json:"price"`
+	Miles              int       `json:"miles"`
+	CoverImageLink     string    `json:"cover_image_link"`
+	InventoryAddedDate time.Time `json:"inventory_added_date"`
 }
 
 // VehicleDetailedRecord defines the detailed vehicle record
 type VehicleDetailedRecord struct {
 	Vin                   string    `json:"vin"`
 	Model                 string    `json:"model"`
-	Year                  string    `json:"year"`
+	Year                  int       `json:"year"`
 	Brand                 string    `json:"brand"`
 	Type                  string    `json:"type"`
 	ExteriorColor         string    `json:"exterior_color"`
@@ -32,5 +35,5 @@ type VehicleDetailedRecord struct {
 	InteriorImageLinks    *[]string `json:"interior_image_links,omitempty"`
 	DaysInInventory       int       `json:"days_in_inventory"`
 	IsWellEquipped        bool      `json:"is_well_equipped"`
-	IsUnderWarranty       bool      `json:"is_under_warranty"`
+	//IsUnderWarranty       bool      `json:"is_under_warranty"`
 }
