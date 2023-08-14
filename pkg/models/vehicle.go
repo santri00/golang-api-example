@@ -2,6 +2,11 @@ package models
 
 import "time"
 
+// AddVehicleResponse response for adding the vehicle record
+type AddVehicleResponse struct {
+	StockId string `json:"stock_id"`
+}
+
 // ListVehicleResponse response for returning list of vehicles
 type ListVehicleResponse struct {
 	Metadata Metadata  `json:"_metadata"`

@@ -11,7 +11,7 @@ import (
 // Service defines the interface methods for vehicle service
 type Service interface {
 	//AddVehicle adds the vehicle data
-	AddVehicle(ctx context.Context, vehicle *models.VehicleDetailedRecord) (string, error)
+	AddVehicle(ctx context.Context, vehicle *models.VehicleDetailedRecord) (*models.AddVehicleResponse, error)
 	// ListVehicles returns the list of vehicles
 	ListVehicles(ctx context.Context, offset, limit int) (*models.ListVehicleResponse, error)
 	// GetVehicleByStockId returns the vehicle data for the given stock ID
@@ -27,15 +27,16 @@ func NewService(vehicleRepo vehicle.Repository) Service {
 	return &service{vehicleRepo: vehicleRepo}
 }
 
-func (svc *service) AddVehicle(ctx context.Context, vehicle *models.VehicleDetailedRecord) (string, error) {
+// AddVehicle adds the vehicle
+func (svc *service) AddVehicle(ctx context.Context, vehicle *models.VehicleDetailedRecord) (*models.AddVehicleResponse, error) {
 	if vehicle == nil {
-		return "", errors.New("vehicle data is empty. The record can't be created")
+		return nil, errors.New("vehicle data is empty. The record can't be created")
 	}
 
 	//maps to entity
 	entity := mapper.MapToVehicleEntity(vehicle)
 	stockId, e := svc.vehicleRepo.Create(ctx, entity)
-	return stockId, e
+	return &models.AddVehicleResponse{StockId: stockId}, e
 }
 
 // ListVehicles returns the list of vehicles

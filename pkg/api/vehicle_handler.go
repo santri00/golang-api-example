@@ -1,8 +1,11 @@
 package api
 
 import (
+	"encoding/json"
 	"github.com/gorilla/mux"
+	"github.com/santri00/golang-api-example/pkg/models"
 	"github.com/santri00/golang-api-example/pkg/router"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -35,7 +38,48 @@ func (server *Server) configureVehicleHandlerRoutes() {
 
 // AddVehicles adds requested vehicle records in the storage
 func (server *Server) addVehicles(w http.ResponseWriter, r *http.Request) {
-	//todo
+	var req *models.VehicleDetailedRecord
+
+	//reads request body
+	body, err := io.ReadAll(r.Body)
+	if err != nil && err != io.EOF {
+		log.Printf("Request body is missing; ERROR >> %s", err.Error())
+		respondJSON(http.StatusBadRequest, errorResponse{
+			StatusCode: http.StatusBadRequest,
+			StatusText: http.StatusText(http.StatusBadRequest),
+			Detail:     "Request body is missing",
+		}, w, r)
+
+		return
+	}
+
+	//unmarshal
+	err = json.Unmarshal(body, req)
+	if err != nil {
+		log.Printf("Failed to read body; ERROR >> %s", err.Error())
+		respondJSON(http.StatusBadRequest, errorResponse{
+			StatusCode: http.StatusBadRequest,
+			StatusText: http.StatusText(http.StatusBadRequest),
+			Detail:     "Invalid request body",
+		}, w, r)
+
+		return
+	}
+
+	//call service
+	response, err := server.vehicleService.AddVehicle(server.ctx, req)
+	if err != nil || response == nil {
+		log.Printf("Failed to add the vehicle record; ERROR >> %s", err.Error())
+		respondJSON(http.StatusInternalServerError, errorResponse{
+			StatusCode: http.StatusInternalServerError,
+			StatusText: http.StatusText(http.StatusInternalServerError),
+			Detail:     "Failed to add the vehicle record",
+		}, w, r)
+
+		return
+	}
+
+	respondJSON(http.StatusCreated, response, w, r)
 }
 
 // Returns all vehicles
