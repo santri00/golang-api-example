@@ -13,7 +13,7 @@ import (
 )
 
 // initializes the server and dependencies
-func initialize() *api.Server {
+func initialize() (*api.Server, *redis.Client) {
 	c := apiconfig.New()
 	e := c.Load("config.yaml")
 	if e != nil {
@@ -23,12 +23,11 @@ func initialize() *api.Server {
 	rdb := initializeRedisClient(fmt.Sprintf("%s:%s",
 		c.Store.Get(configkeys.RedisAddr),
 		c.Store.Get(configkeys.RedisPort)))
-	defer rdb.Close()
 
 	return api.NewServer(context.Background(),
 		c,
 		rdb,
-		vehicle.NewService(vehicleStorage.New(rdb)))
+		vehicle.NewService(vehicleStorage.New(rdb))), rdb
 }
 
 // initializes the redis client and connection

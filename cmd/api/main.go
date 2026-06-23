@@ -1,6 +1,7 @@
 package main
 
 func main() {
-	server := initialize()
+	server, rdb := initialize()
+	defer rdb.Close()
 	server.Run()
 }
