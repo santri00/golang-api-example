@@ -2,13 +2,14 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/gorilla/mux"
-	"github.com/santri00/golang-api-example/pkg/models"
-	"github.com/santri00/golang-api-example/pkg/router"
 	"io"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
+	"github.com/santri00/golang-api-example/pkg/models"
+	"github.com/santri00/golang-api-example/pkg/router"
 )
 
 // adds routes related to vehicle resource handler
