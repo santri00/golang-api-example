@@ -1,0 +1,26 @@
+{
+  "title": "2022 Subaru Outback Premium",
+  "price": "31800",
+  "miles": 21400,
+  "cover_image_link": "https://example.com/images/subaru-outback-2022.jpg",
+  "inventory_added_date": "2024-03-22T10:30:00Z",
+  "vin": "4S4BTACC8N3890123",
+  "model": "Outback",
+  "year": 2022,
+  "brand": "Subaru",
+  "type": "SUV",
+  "exterior_color": "Magnetite Gray Metallic",
+  "interior_color": "Warm Ivory",
+  "miles_per_gallon_city": 26,
+  "miles_per_gallon_highway": 33,
+  "transmission_type": "CVT",
+  "features": ["Symmetrical AWD", "EyeSight Driver Assist", "Apple CarPlay", "Heated Front Seats", "Roof Rails", "StarLink Safety"],
+  "exterior_image_links": [
+    "https://example.com/images/subaru-outback-2022-front.jpg",
+    "https://example.com/images/subaru-outback-2022-side.jpg"
+  ],
+  "interior_image_links": [
+    "https://example.com/images/subaru-outback-2022-interior.jpg"
+  ],
+  "is_well_equipped": true
+}

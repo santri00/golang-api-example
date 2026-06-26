@@ -1,0 +1,27 @@
+{
+  "title": "2023 Honda Civic Sport",
+  "price": "26400",
+  "miles": 4200,
+  "cover_image_link": "https://example.com/images/honda-civic-2023.jpg",
+  "inventory_added_date": "2024-05-01T10:00:00Z",
+  "vin": "2HGFE2F53PH345678",
+  "model": "Civic",
+  "year": 2023,
+  "brand": "Honda",
+  "type": "Sedan",
+  "exterior_color": "Sonic Gray Pearl",
+  "interior_color": "Black",
+  "miles_per_gallon_city": 31,
+  "miles_per_gallon_highway": 40,
+  "transmission_type": "CVT",
+  "features": ["Honda Sensing Suite", "Apple CarPlay", "Android Auto", "Heated Front Seats", "Sunroof"],
+  "exterior_image_links": [
+    "https://example.com/images/honda-civic-2023-front.jpg",
+    "https://example.com/images/honda-civic-2023-rear.jpg"
+  ],
+  "interior_image_links": [
+    "https://example.com/images/honda-civic-2023-interior.jpg",
+    "https://example.com/images/honda-civic-2023-dashboard.jpg"
+  ],
+  "is_well_equipped": true
+}

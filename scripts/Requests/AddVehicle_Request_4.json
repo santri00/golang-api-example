@@ -1,0 +1,25 @@
+{
+  "title": "2020 Chevrolet Silverado 1500 LT",
+  "price": "34500",
+  "miles": 47800,
+  "cover_image_link": "https://example.com/images/chevy-silverado-2020.jpg",
+  "inventory_added_date": "2023-11-20T14:00:00Z",
+  "vin": "3GCUYDED0LG456789",
+  "model": "Silverado 1500",
+  "year": 2020,
+  "brand": "Chevrolet",
+  "type": "Truck",
+  "exterior_color": "Red Hot",
+  "interior_color": "Jet Black",
+  "miles_per_gallon_city": 17,
+  "miles_per_gallon_highway": 23,
+  "transmission_type": "Automatic",
+  "features": ["Tow Package", "EZ Lift Tailgate", "Rear View Camera", "Chevy Safety Assist", "Remote Start"],
+  "exterior_image_links": [
+    "https://example.com/images/chevy-silverado-2020-front.jpg"
+  ],
+  "interior_image_links": [
+    "https://example.com/images/chevy-silverado-2020-interior.jpg"
+  ],
+  "is_well_equipped": false
+}

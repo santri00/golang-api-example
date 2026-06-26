@@ -91,7 +91,7 @@ func (server *Server) listVehicles(w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	offsetValue := 0
-	limitValue := 0
+	limitValue := -1
 	var validationErrors []string
 	if len(offset) > 0 {
 		offsetValue, err = strconv.Atoi(offset)

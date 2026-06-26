@@ -1,0 +1,26 @@
+{
+  "title": "2020 Dodge Charger R/T",
+  "price": "36100",
+  "miles": 41200,
+  "cover_image_link": "https://example.com/images/dodge-charger-2020.jpg",
+  "inventory_added_date": "2023-10-08T15:00:00Z",
+  "vin": "2C3CDXCT3LH901234",
+  "model": "Charger",
+  "year": 2020,
+  "brand": "Dodge",
+  "type": "Sedan",
+  "exterior_color": "Go Mango Orange",
+  "interior_color": "Black",
+  "miles_per_gallon_city": 16,
+  "miles_per_gallon_highway": 25,
+  "transmission_type": "Automatic",
+  "features": ["5.7L HEMI V8", "Sport Mode", "Brembo Brakes", "Uconnect 4C", "Blind Spot Monitoring", "Launch Control"],
+  "exterior_image_links": [
+    "https://example.com/images/dodge-charger-2020-front.jpg",
+    "https://example.com/images/dodge-charger-2020-rear.jpg"
+  ],
+  "interior_image_links": [
+    "https://example.com/images/dodge-charger-2020-interior.jpg"
+  ],
+  "is_well_equipped": true
+}
