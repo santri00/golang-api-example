@@ -103,6 +103,12 @@ func (repo *repository) GetAll(ctx context.Context, offset int, limit int) (*[]e
 		return nil, 0, errors.New("invalid argument;limit value (should be greater than 0) must be provided")
 	}
 
+	//get total count of records in the list
+	totalCount, e := repo.redisClient.LLen(ctx, cachekeys.VehicleRecordListCacheKey).Result()
+	if e != nil {
+		return nil, 0, fmt.Errorf("failed to retrieve vehicle record count. error: %s", e.Error())
+	}
+
 	//return list from cache
 	data, e := repo.redisClient.LRange(ctx, cachekeys.VehicleRecordListCacheKey, int64(offset), int64(limit)).Result()
 	if e != nil {
@@ -127,7 +133,7 @@ func (repo *repository) GetAll(ctx context.Context, offset int, limit int) (*[]e
 		result = append(result, vehicle)
 	}
 
-	return &result, 0, nil
+	return &result, int(totalCount), nil
 }
 
 // Get fetches the vehicle detailed record for the given stock ID

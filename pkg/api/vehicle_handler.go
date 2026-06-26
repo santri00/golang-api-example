@@ -31,7 +31,7 @@ func (server *Server) configureVehicleHandlerRoutes() {
 		router.Route{
 			Name:       "GetVehicleByStockId",
 			HTTPVerb:   "GET",
-			Pattern:    "/inventory/v1/vehicles/:stock_id",
+			Pattern:    "/inventory/v1/vehicles/{stock_id}",
 			HandleFunc: server.getVehicleByStockId,
 		},
 	)
@@ -39,7 +39,7 @@ func (server *Server) configureVehicleHandlerRoutes() {
 
 // AddVehicles adds requested vehicle records in the storage
 func (server *Server) addVehicles(w http.ResponseWriter, r *http.Request) {
-	var req *models.VehicleDetailedRecord
+	var req models.VehicleDetailedRecord
 
 	//reads request body
 	body, err := io.ReadAll(r.Body)
@@ -55,7 +55,7 @@ func (server *Server) addVehicles(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//unmarshal
-	err = json.Unmarshal(body, req)
+	err = json.Unmarshal(body, &req)
 	if err != nil {
 		log.Printf("Failed to read body; ERROR >> %s", err.Error())
 		respondJSON(http.StatusBadRequest, errorResponse{
@@ -68,7 +68,7 @@ func (server *Server) addVehicles(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//call service
-	response, err := server.vehicleService.AddVehicle(server.ctx, req)
+	response, err := server.vehicleService.AddVehicle(server.ctx, &req)
 	if err != nil || response == nil {
 		log.Printf("Failed to add the vehicle record; ERROR >> %s", err.Error())
 		respondJSON(http.StatusInternalServerError, errorResponse{
@@ -91,7 +91,7 @@ func (server *Server) listVehicles(w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	offsetValue := 0
-	limitValue := 0
+	limitValue := -1
 	var validationErrors []string
 	if len(offset) > 0 {
 		offsetValue, err = strconv.Atoi(offset)
@@ -102,7 +102,7 @@ func (server *Server) listVehicles(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(limit) > 0 {
-		limitValue, err = strconv.Atoi(offset)
+		limitValue, err = strconv.Atoi(limit)
 		if err != nil {
 			log.Printf("ERROR >> %s", "request is invalid. invalid limit value")
 			validationErrors = append(validationErrors, "valid limit must be provided")
@@ -117,6 +117,7 @@ func (server *Server) listVehicles(w http.ResponseWriter, r *http.Request) {
 			Detail:           "Failed request validation",
 			ValidationErrors: validationErrors,
 		}, w, r)
+		return
 	}
 
 	//call service layer

@@ -1,0 +1,27 @@
+{
+  "title": "2023 Hyundai Tucson SEL",
+  "price": "29500",
+  "miles": 9800,
+  "cover_image_link": "https://example.com/images/hyundai-tucson-2023.jpg",
+  "inventory_added_date": "2024-05-15T08:00:00Z",
+  "vin": "5NMJB3AE1PH012345",
+  "model": "Tucson",
+  "year": 2023,
+  "brand": "Hyundai",
+  "type": "SUV",
+  "exterior_color": "Aqua Teal",
+  "interior_color": "Black",
+  "miles_per_gallon_city": 26,
+  "miles_per_gallon_highway": 33,
+  "transmission_type": "Automatic",
+  "features": ["Hyundai SmartSense", "Wireless Apple CarPlay", "Heated Steering Wheel", "Blind View Monitor", "Remote Start", "Panoramic Sunroof"],
+  "exterior_image_links": [
+    "https://example.com/images/hyundai-tucson-2023-front.jpg",
+    "https://example.com/images/hyundai-tucson-2023-rear.jpg"
+  ],
+  "interior_image_links": [
+    "https://example.com/images/hyundai-tucson-2023-interior.jpg",
+    "https://example.com/images/hyundai-tucson-2023-dashboard.jpg"
+  ],
+  "is_well_equipped": true
+}

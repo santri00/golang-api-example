@@ -1,0 +1,26 @@
+{
+  "title": "2021 Ford F-150 XLT",
+  "price": "38750",
+  "miles": 32100,
+  "cover_image_link": "https://example.com/images/ford-f150-2021.jpg",
+  "inventory_added_date": "2024-01-15T08:30:00Z",
+  "vin": "1FTFW1ET5MFA23456",
+  "model": "F-150",
+  "year": 2021,
+  "brand": "Ford",
+  "type": "Truck",
+  "exterior_color": "Agate Black",
+  "interior_color": "Medium Dark Slate",
+  "miles_per_gallon_city": 20,
+  "miles_per_gallon_highway": 26,
+  "transmission_type": "Automatic",
+  "features": ["Tow Package", "Bedliner", "Backup Camera", "SYNC 3", "Blind Spot Monitoring"],
+  "exterior_image_links": [
+    "https://example.com/images/ford-f150-2021-front.jpg",
+    "https://example.com/images/ford-f150-2021-side.jpg"
+  ],
+  "interior_image_links": [
+    "https://example.com/images/ford-f150-2021-interior.jpg"
+  ],
+  "is_well_equipped": true
+}
