@@ -14,7 +14,7 @@ import (
 // mockRepository is a test double for storagevehicle.Repository.
 type mockRepository struct {
 	createFn func(ctx context.Context, v *entities.Vehicle) (string, error)
-	getAllFn  func(ctx context.Context, offset, limit int) (*[]entities.VehicleBasicRecord, int, error)
+	getAllFn func(ctx context.Context, offset, limit int) (*[]entities.VehicleBasicRecord, int, error)
 	getFn    func(ctx context.Context, stockId string) (*entities.Vehicle, error)
 }
 

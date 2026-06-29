@@ -85,13 +85,19 @@ func TestCreate_Success(t *testing.T) {
 
 	// Verify the vehicle hash was written to Redis.
 	hashKey := "vehicle:" + stockId
-	hashLen, _ := client.HLen(ctx, hashKey).Result()
+	hashLen, err := client.HLen(ctx, hashKey).Result()
+	if err != nil {
+		t.Fatalf("HLen failed: %v", err)
+	}
 	if hashLen == 0 {
 		t.Errorf("expected hash key %q in Redis, not found", hashKey)
 	}
 
 	// Verify the basic record was appended to the vehicle list.
-	listLen, _ := client.LLen(ctx, cachekeys.VehicleRecordListCacheKey).Result()
+	listLen, err := client.LLen(ctx, cachekeys.VehicleRecordListCacheKey).Result()
+	if err != nil {
+		t.Fatalf("LLen failed: %v", err)
+	}
 	if listLen != 1 {
 		t.Errorf("expected list length 1, got %d", listLen)
 	}
@@ -133,8 +139,13 @@ func TestGetAll_ReturnsRecordsAndCount(t *testing.T) {
 	// Seed two records via the client.
 	for i, title := range []string{"Car A", "Car B"} {
 		br := entities.VehicleBasicRecord{StockID: "stock-" + string(rune('1'+i)), Title: title}
-		b, _ := json.Marshal(br)
-		client.RPush(ctx, cachekeys.VehicleRecordListCacheKey, string(b))
+		b, err := json.Marshal(br)
+		if err != nil {
+			t.Fatalf("failed to marshal seed record: %v", err)
+		}
+		if err := client.RPush(ctx, cachekeys.VehicleRecordListCacheKey, string(b)).Err(); err != nil {
+			t.Fatalf("failed to seed record: %v", err)
+		}
 	}
 
 	records, total, err := repo.GetAll(ctx, 0, -1)
@@ -155,8 +166,13 @@ func TestGetAll_PaginationOffsetAndLimit(t *testing.T) {
 
 	for i, title := range []string{"Car A", "Car B", "Car C"} {
 		br := entities.VehicleBasicRecord{StockID: "stock-" + string(rune('1'+i)), Title: title}
-		b, _ := json.Marshal(br)
-		client.RPush(ctx, cachekeys.VehicleRecordListCacheKey, string(b))
+		b, err := json.Marshal(br)
+		if err != nil {
+			t.Fatalf("failed to marshal seed record: %v", err)
+		}
+		if err := client.RPush(ctx, cachekeys.VehicleRecordListCacheKey, string(b)).Err(); err != nil {
+			t.Fatalf("failed to seed record: %v", err)
+		}
 	}
 
 	// LRANGE 0 1 returns indices 0 and 1 (2 records).
