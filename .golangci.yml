@@ -1,0 +1,34 @@
+run:
+  timeout: 5m
+  go: "1.19"
+
+linters:
+  enable:
+    - errcheck       # checks for unchecked errors
+    - gosimple       # simplification suggestions
+    - govet          # reports suspicious constructs
+    - ineffassign    # detects unused variable assignments
+    - staticcheck    # wide range of static analysis checks
+    - unused         # checks for unused code
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+  govet:
+    enable-all: true
+    disable:
+      - fieldalignment  # micro-optimization; not appropriate as a quality gate
+  staticcheck:
+    checks: ["all"]
+
+issues:
+  exclude-rules:
+    # Ignore errors from w.Write in HTTP handlers — the response is already committed at that point
+    - path: pkg/api
+      linters: [errcheck]
+      text: "w\\.Write"
+    # Ignore unhandled pipe.Close errors — close after defer is idiomatic for pipelines
+    - path: pkg/storage/vehicle/repository.go
+      linters: [errcheck]
+      text: "pipe\\.Close"

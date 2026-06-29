@@ -1,0 +1,8 @@
+# Force LF line endings in the repo for all text files.
+# This overrides core.autocrlf on Windows and keeps go fmt output stable.
+* text=auto eol=lf
+
+# Explicitly mark binary files so Git never touches their line endings.
+*.exe binary
+*.png binary
+*.jpg binary

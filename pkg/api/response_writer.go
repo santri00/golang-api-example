@@ -19,6 +19,7 @@ func respondJSON(httpStatus int, o interface{}, w http.ResponseWriter, r *http.R
 	log.Printf("Responded: %s\t%s\t%s\t%d", r.Method, r.URL.String(), r.RemoteAddr, httpStatus)
 
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(httpStatus)
 	w.Write(jsonResponse)
 }
 
